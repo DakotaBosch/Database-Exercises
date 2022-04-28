@@ -5,29 +5,31 @@ PSQLp="psql -U freecodecamp -d periodic_table -t --no-align -c"
 echo "Please provide an element as an argument"
 read element
 
-name=( $($PSQLp "select name from elements;") )
-symbol=( $($PSQLp "select symbol from elements;") )
-anum=( $($PSQLp "select atomic_number from elements;") )
+namelist=( $($PSQLp "select name from elements;") )
+symbollist=( $($PSQLp "select symbol from elements;") )
+anumlist=( $($PSQLp "select atomic_number from elements;") )
 
-if [[ "$name" == *"$element"* ]]
+if [[ "${symbollist[@]}" == *"$element"* ]]
 then
-	symbol=( $($PSQLp "select symbol from elements where symbol = '$symbol';") )
-	anum_number=( $($PSQLp "select atomic_number from elements where symbol = '$symbol';") )
-elif [[ "$anum" == *"$element"* ]]
+	name=( $($PSQLp "select name from elements where symbol = '$element';") )
+	anum=( $($PSQLp "select atomic_number from elements where symbol = '$element';") )
+elif [[ "${namelist[@]}" == *"$element"* ]]
 then
-	name=( $($PSQLp "select name from elements where atomic_number = '$anum';") )
-	symbol=( $($PSQLp "select symbol from elements where atomic_number = '$anum';") )
-elif [[ "$symbol" == *"$element"* ]]
+	symbol=( $($PSQLp "select symbol from elements where name = '$element';") )
+	anum=( $($PSQLp "select atomic_number from elements where name = '$element';") )
+elif [[ "${anumlist[@]}" == *"$element"* ]]
 then
-	name=( $($PSQLp "select name from elements where symbol = '$symbol';") )
-	anum=( $($PSQLp "select atomic_number from elements where symbol = '$symbol';") )
-	
+	name=( $($PSQLp "select name from elements where atomic_number = '$element';") )
+	symbol=( $($PSQLp "select symbol from elements where atomic_number = '$element';") )
+
 else 
 	echo "I could not find that element in the database." 
+	exit 1
 fi
 
+echo $anum $symbol $name
 
-#anum=( $($PSQLp "select atomic_number from elements where name = "$name"; ))
+anum=( $($PSQLp "select atomic_number from elements where name = '$name';"))
 
 name=( $($PSQLp "select name from elements where atomic_number = '$anum';"))
 symbol=( $($PSQLp "select symbol from elements where atomic_number = '$anum';"))
